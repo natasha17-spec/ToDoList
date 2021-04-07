@@ -18,16 +18,16 @@ function App() {
     ])
     const [filter, setFilter] = useState<FilteredType>('all')
     const [addTask, setTask] = useState('')
+    const [err, setErr] = useState(false)
 
     let tasksForTodolist = tasks;
-
     if (filter === 'completed') {
         tasksForTodolist = tasks.filter(ac => ac.isDone)
     }
     if (filter === 'active') {
         tasksForTodolist = tasks.filter(ac => !ac.isDone)
     }
-    
+
     function deleteTask(id: string) {
         debugger
         let filteredTasks = tasks.filter(t => t.id !== id)
@@ -40,19 +40,32 @@ function App() {
     }
 
     function addNewTask() {
-        let newTask= {
+        let newTask = {
             id: v1(),
-            title: addTask,
+            title: addTask.trim(),
             isDone: false
         }
-        let newTasks = [newTask,...tasks]
-        setTasks(newTasks)
-        setTask('')
+        if (addTask !== '') {
+            let newTasks = [newTask, ...tasks]
+            setTasks(newTasks)
+            setTask('')
+        } else {
+            setErr(true)
+        }
+    }
+
+    function changeStatus(taskID: string, isDone: boolean) {
+        let task = tasks.find(t => t.id === taskID)
+        if (task) {
+            task.isDone = isDone;
+        }
+        setTasks([...tasks])
 
     }
-    
-    function onKeyPressEnter(e:any) {
-        if(e.charCode === 13){
+
+    function onKeyPressEnter(e: any) {
+        if (e.charCode === 13) {
+            setErr(false)
             addNewTask()
         }
     }
@@ -68,7 +81,10 @@ function App() {
                       onKeyPressEnter={onKeyPressEnter}
                       addTask={addTask}
                       setTask={setTask}
-
+                      changeStatus={changeStatus}
+                      err={err}
+                      setErr={setErr}
+                      filter={filter}
             />
         </div>
     );
