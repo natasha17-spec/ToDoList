@@ -5,13 +5,14 @@ import {v1} from 'uuid';
 import {AddNewItemForm} from "./AddNewItemForm";
 
 export type FilterValuesType = "all" | "active" | "completed";
-type TodolistType = {
+
+export type TodolistType = {
     id: string
     title: string
     filter: FilterValuesType
 }
 
-type TasksStateType = {
+export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
