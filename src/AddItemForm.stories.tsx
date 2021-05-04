@@ -1,16 +1,14 @@
-import {AddItemForm} from './AddItemForm';
-import React from 'react';
-import {action} from '@storybook/addon-actions';
-
+import React from 'react'
+import {action} from '@storybook/addon-actions'
+import {AddItemForm} from './AddItemForm'
 
 export default {
-    title:'AddItemForm',
-     component:AddItemForm
-
+    title: 'AddItemForm Stories',
+    component: AddItemForm
 }
 
-
-export const AddNewItemFormBasicExample = ()=>{
-    // eslint-disable-next-line react/react-in-jsx-scope
-    return <AddItemForm addItem={action('addNewItem:')}/>
+export const AddItemFormBaseExample = (props: any) => {
+    return (<AddItemForm
+        addItem={action('Button inside form clicked')}
+    />)
 }
