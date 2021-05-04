@@ -8,7 +8,7 @@ import {
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
-    fetchTodolists,
+    fetchTodolistsThunk,
     FilterValuesType,
     removeTodolistAC,
     TodolistDomainType
@@ -31,8 +31,8 @@ function AppWithRedux() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        fetchTodolists(dispatch)
-    }, [])
+        dispatch(fetchTodolistsThunk())
+    }, [dispatch])
 
 
     const removeTask = useCallback(function (id: string, todolistId: string) {

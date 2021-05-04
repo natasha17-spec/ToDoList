@@ -100,12 +100,20 @@ export const setTodolistsAC = (todolists:TodolistType[]):SetTodolistActionType=>
         type:'SET-TODOLIST', todolists
     }
 }
-export const fetchTodolists =(dispatch:Dispatch)=>{
+export const fetchTodolistsThunk =()=>{
+    return (dispatch:Dispatch)=>{
     todolistsAPI.getTodolists()
         .then((res) => {
             let action = res.data
             dispatch(setTodolistsAC(action))
         })
-}
+}}
+// export const fetchRemoveTodolistTodolists =(dispatch:Dispatch,id:string)=>{
+//     todolistsAPI.deleteTodolist(id)
+//         .then((res) => {
+//             let action = res.data
+//             dispatch(removeTodolistAC(action))
+//         })
+// }
 
 
