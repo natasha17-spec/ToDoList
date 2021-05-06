@@ -108,12 +108,20 @@ export const fetchTodolistsThunk =()=>{
             dispatch(setTodolistsAC(action))
         })
 }}
-// export const fetchRemoveTodolistTodolists =(dispatch:Dispatch,id:string)=>{
-//     todolistsAPI.deleteTodolist(id)
-//         .then((res) => {
-//             let action = res.data
-//             dispatch(removeTodolistAC(action))
-//         })
-// }
+export const fetchRemoveTodolistTodolists =(id:string)=>{
+    debugger
+   return (dispatch:Dispatch)=>{
+        todolistsAPI.deleteTodolist(id)
+            .then((res) => {
+                if(res.status === 200){
+                    dispatch(removeTodolistAC(id))
+                } else {
+                    throw new Error('deleteTodolist call something error')
+                }
+
+            })
+    }
+
+}
 
 

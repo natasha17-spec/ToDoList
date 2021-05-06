@@ -4,7 +4,6 @@ import {
     AddTodolistActionType,
     RemoveTodolistActionType,
     SetTodolistActionType,
-    setTodolistsAC
 } from './todolists-reducer';
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI} from '../api/todolists-api'
 import {Dispatch} from 'redux';
