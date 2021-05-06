@@ -69,6 +69,7 @@ type GetTasksResponse = {
 
 export const todolistsAPI = {
     getTodolists() {
+        debugger
         const promise = instance.get<TodolistType[]>('todo-lists');
         return promise;
     },
@@ -81,6 +82,7 @@ export const todolistsAPI = {
         return promise;
     },
     updateTodolist(id: string, title: string) {
+        debugger
         const promise = instance.put<ResponseType>(`todo-lists/${id}`, {title: title});
         return promise;
     },

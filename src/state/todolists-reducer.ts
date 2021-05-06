@@ -101,7 +101,9 @@ export const setTodolistsAC = (todolists:TodolistType[]):SetTodolistActionType=>
     }
 }
 export const fetchTodolistsThunk =()=>{
+    debugger
     return (dispatch:Dispatch)=>{
+        debugger
     todolistsAPI.getTodolists()
         .then((res) => {
             let action = res.data
@@ -109,7 +111,6 @@ export const fetchTodolistsThunk =()=>{
         })
 }}
 export const fetchRemoveTodolistTodolists =(id:string)=>{
-    debugger
    return (dispatch:Dispatch)=>{
         todolistsAPI.deleteTodolist(id)
             .then((res) => {
@@ -118,10 +119,34 @@ export const fetchRemoveTodolistTodolists =(id:string)=>{
                 } else {
                     throw new Error('deleteTodolist call something error')
                 }
-
             })
     }
-
+}
+export const fetchChangeTodolistTittle =(id: string, title: string)=>{
+   return (dispatch:Dispatch)=>{
+        todolistsAPI.updateTodolist(id,title)
+            .then((res) => {
+                if(res.status === 200){
+                    dispatch(changeTodolistTitleAC(id,title))
+                } else {
+                    throw new Error('deleteTodolist call something error')
+                }
+            })
+    }
+}
+export const fetchCreateTodolist =(title: string)=>{
+    debugger
+    return (dispatch:Dispatch)=>{
+        todolistsAPI.createTodolist(title)
+            .then((res) => {
+                debugger
+                if(res.status === 200){
+                    dispatch(addTodolistAC(title))
+                } else {
+                    throw new Error('deleteTodolist call something error')
+                }
+            })
+    }
 }
 
 
