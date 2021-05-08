@@ -9,8 +9,7 @@ export type RemoveTodolistActionType = {
 }
 export type AddTodolistActionType = {
     type: 'ADD-TODOLIST',
-    title: string
-    todolistId: string
+    todolist: TodolistType
 }
 export type ChangeTodolistTitleActionType = {
     type: 'CHANGE-TODOLIST-TITLE',
@@ -45,13 +44,8 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
             return state.filter(tl => tl.id != action.id)
         }
         case 'ADD-TODOLIST': {
-            return [{
-                id: action.todolistId,
-                title: action.title,
-                filter: 'all',
-                addedDate: '',
-                order: 0
-            }, ...state]
+            let newTodo:TodolistDomainType = {...action.todolist,filter:'all'}
+            return [newTodo, ...state]
         }
         case 'CHANGE-TODOLIST-TITLE': {
             const todolist = state.find(tl => tl.id === action.id);
@@ -71,9 +65,9 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
         }
 
         case 'SET-TODOLIST': {
-            return action.todolists.map((tl)=>{
+            return action.todolists.map((tl) => {
                 return {
-                    ...tl,filter:'all'
+                    ...tl, filter: 'all'
                 }
             })
         }
@@ -85,8 +79,8 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
 export const removeTodolistAC = (todolistId: string): RemoveTodolistActionType => {
     return {type: 'REMOVE-TODOLIST', id: todolistId}
 }
-export const addTodolistAC = (title: string): AddTodolistActionType => {
-    return {type: 'ADD-TODOLIST', title: title, todolistId: v1()}
+export const addTodolistAC = (todolist: TodolistType): AddTodolistActionType => {
+    return {type: 'ADD-TODOLIST', todolist}
 }
 export const changeTodolistTitleAC = (id: string, title: string): ChangeTodolistTitleActionType => {
     return {type: 'CHANGE-TODOLIST-TITLE', id: id, title: title}
@@ -95,26 +89,27 @@ export const changeTodolistFilterAC = (id: string, filter: FilterValuesType): Ch
     return {type: 'CHANGE-TODOLIST-FILTER', id: id, filter: filter}
 }
 
-export const setTodolistsAC = (todolists:TodolistType[]):SetTodolistActionType=>{
+export const setTodolistsAC = (todolists: TodolistType[]): SetTodolistActionType => {
     return {
-        type:'SET-TODOLIST', todolists
+        type: 'SET-TODOLIST', todolists
     }
 }
-export const fetchTodolistsThunk =()=>{
+export const fetchTodolistsThunk = () => {
     debugger
-    return (dispatch:Dispatch)=>{
+    return (dispatch: Dispatch) => {
         debugger
-    todolistsAPI.getTodolists()
-        .then((res) => {
-            let action = res.data
-            dispatch(setTodolistsAC(action))
-        })
-}}
-export const fetchRemoveTodolistTodolists =(id:string)=>{
-   return (dispatch:Dispatch)=>{
+        todolistsAPI.getTodolists()
+            .then((res) => {
+                let action = res.data
+                dispatch(setTodolistsAC(action))
+            })
+    }
+}
+export const fetchRemoveTodolistTodolists = (id: string) => {
+    return (dispatch: Dispatch) => {
         todolistsAPI.deleteTodolist(id)
             .then((res) => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     dispatch(removeTodolistAC(id))
                 } else {
                     throw new Error('deleteTodolist call something error')
@@ -122,31 +117,45 @@ export const fetchRemoveTodolistTodolists =(id:string)=>{
             })
     }
 }
-export const fetchChangeTodolistTittle =(id: string, title: string)=>{
-   return (dispatch:Dispatch)=>{
-        todolistsAPI.updateTodolist(id,title)
+export const fetchChangeTodolistTittle = (id: string, title: string) => {
+    return (dispatch: Dispatch) => {
+        todolistsAPI.updateTodolist(id, title)
             .then((res) => {
-                if(res.status === 200){
-                    dispatch(changeTodolistTitleAC(id,title))
+                if (res.status === 200) {
+                    dispatch(changeTodolistTitleAC(id, title))
                 } else {
                     throw new Error('deleteTodolist call something error')
                 }
             })
     }
 }
-export const fetchCreateTodolist =(title: string)=>{
+export const fetchCreateTodolist = (title: string) => {
     debugger
-    return (dispatch:Dispatch)=>{
+    return (dispatch: Dispatch) => {
         todolistsAPI.createTodolist(title)
             .then((res) => {
                 debugger
-                if(res.status === 200){
-                    dispatch(addTodolistAC(title))
+                if (res.status === 200) {
+                    dispatch(addTodolistAC(res.data.data.item))
                 } else {
                     throw new Error('deleteTodolist call something error')
                 }
             })
     }
 }
+// export const fetchChangeFilterTodolist = (value: FilterValuesType, todolistId: string) => {
+//     debugger
+//     return (dispatch: Dispatch) => {
+//         todolistsAPI.updateTodolist(title)
+//             .then((res) => {
+//                 debugger
+//                 if (res.status === 200) {
+//                     dispatch(addTodolistAC(res.data.data.item))
+//                 } else {
+//                     throw new Error('deleteTodolist call something error')
+//                 }
+//             })
+//     }
+// }
 
 
