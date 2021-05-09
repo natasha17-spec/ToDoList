@@ -2,6 +2,7 @@ import {v1} from 'uuid';
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {useEffect} from 'react';
 import {Dispatch} from 'redux';
+import {setStatus, SetStatusType} from '../helpers/helpers-reducer';
 
 export type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -96,10 +97,12 @@ export const setTodolistsAC = (todolists: TodolistType[]): SetTodolistActionType
 }
 export const fetchTodolistsThunk = () => {
     debugger
-    return (dispatch: Dispatch) => {
+    return (dispatch: Dispatch<ActionsType | SetStatusType>) => {
+        dispatch(setStatus('loading'))
         debugger
         todolistsAPI.getTodolists()
             .then((res) => {
+                dispatch(setStatus('succeeded'))
                 let action = res.data
                 dispatch(setTodolistsAC(action))
             })

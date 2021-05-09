@@ -8,20 +8,20 @@ const initialState:InitialStateType =  {
     error:'some errorrr'
 }
 
-type StatusType = 'idle' | 'loading'| 'succeeded' | 'failed'
+export type StatusType = 'idle' | 'loading'| 'succeeded' | 'failed'
 
-type SetAppStatus = {
+export type SetStatusType = {
     type:'APP/SET-STATUS'
     status:StatusType
 }
-type SetErrorStatus = {
+export type SetErrorType = {
     type:'APP/SET-ERROR'
     error:string | null
 }
 
 
 
-type ActionsType = SetAppStatus | SetErrorStatus
+type ActionsType = SetStatusType | SetErrorType
 
 export const helpersReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -38,13 +38,13 @@ export const helpersReducer = (state = initialState, action: ActionsType): Initi
 }
 
 
-export const setStatus = (status:StatusType):SetAppStatus=>{
+export const setStatus = (status:StatusType):SetStatusType=>{
     return {
         type:'APP/SET-STATUS', status
     }
 }
 
-export const setError = (error:string|null):SetErrorStatus=>{
+export const setError = (error:string|null):SetErrorType=>{
     return {
         type:'APP/SET-ERROR', error
     }

@@ -7,7 +7,7 @@ import {AppRootStateType} from '../../state/store'
 import {TaskPriorities, TaskStatuses} from '../../api/todolists-api'
 import {tasksReducer} from '../../state/Task/tasks-reducer';
 import {todolistsReducer} from '../../state/todolist/todolists-reducer';
-import {helpersReducer} from '../../state/helpers/helpers';
+import {helpersReducer} from '../../state/helpers/helpers-reducer';
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,

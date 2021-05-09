@@ -19,7 +19,8 @@ import {AppRootStateType} from '../state/store';
 import {TaskStatuses, TaskType} from '../api/todolists-api'
 import LinearIndeterminate from '../helpers/Preloder';
 import Snackbar from '../helpers/SnackBar'
-import ErrorHelpers from '../helpers/SnackBar';
+import ErrorHelpers from '../helpers/SnackBar'
+import {StatusType} from '../state/helpers/helpers-reducer';
 
 export type TasksStateType = {
     [key: string]: Array<TaskType>
@@ -27,9 +28,9 @@ export type TasksStateType = {
 
 
 function AppWithRedux() {
-    debugger
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+    const loading = useSelector<AppRootStateType, StatusType>(state => state.helpers.status)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -91,7 +92,7 @@ function AppWithRedux() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
-            <LinearIndeterminate/>
+            {loading === 'loading' && <LinearIndeterminate/>}
             <ErrorHelpers/>
             <Container fixed>
                 <Grid container style={{padding: "20px"}}>

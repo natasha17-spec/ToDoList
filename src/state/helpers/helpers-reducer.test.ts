@@ -1,4 +1,4 @@
-import {helpersReducer, InitialStateType, setError, setStatus} from './helpers';
+import {helpersReducer, InitialStateType, setError, setStatus} from './helpers-reducer';
     let startState:InitialStateType
     beforeEach(()=>{
         startState =  {
