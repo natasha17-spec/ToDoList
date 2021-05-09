@@ -1,13 +1,13 @@
-import {TasksStateType} from '../AppWithRedux';
+import {TasksStateType} from '../../app/AppWithRedux';
 import {v1} from 'uuid';
 import {
     AddTodolistActionType,
     RemoveTodolistActionType,
     SetTodolistActionType,
-} from './todolists-reducer';
-import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../api/todolists-api'
+} from '../todolist/todolists-reducer';
+import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {Dispatch} from 'redux';
-import {AppRootStateType} from './store';
+import {AppRootStateType} from '../store';
 
 export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',

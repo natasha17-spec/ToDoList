@@ -1,24 +1,25 @@
 import React, {useCallback, useEffect} from 'react'
 import './App.css';
-import {Todolist} from './Todolist';
-import {AddItemForm} from './AddItemForm';
+import {Todolist} from '../Todolist';
+import {AddItemForm} from '../AddItemForm';
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from '@material-ui/core';
 import {Menu} from '@material-ui/icons';
 import {
-    addTodolistAC,
     changeTodolistFilterAC,
-    fetchChangeTodolistTittle, fetchCreateTodolist,
+    fetchChangeTodolistTittle,
+    fetchCreateTodolist,
     fetchRemoveTodolistTodolists,
     fetchTodolistsThunk,
     FilterValuesType,
     TodolistDomainType
-} from './state/todolists-reducer'
-import {addTaskTC, changeTaskStatusTC, changeTaskTitleTC, removeTaskTC} from './state/tasks-reducer';
+} from '../state/todolist/todolists-reducer'
+import {addTaskTC, changeTaskStatusTC, changeTaskTitleTC, removeTaskTC} from '../state/Task/tasks-reducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppRootStateType} from './state/store';
-import {TaskStatuses, TaskType} from './api/todolists-api'
-import {v1} from 'uuid';
-
+import {AppRootStateType} from '../state/store';
+import {TaskStatuses, TaskType} from '../api/todolists-api'
+import LinearIndeterminate from '../helpers/Preloder';
+import Snackbar from '../helpers/SnackBar'
+import ErrorHelpers from '../helpers/SnackBar';
 
 export type TasksStateType = {
     [key: string]: Array<TaskType>
@@ -78,6 +79,7 @@ function AppWithRedux() {
 
     return (
         <div className="App">
+            <Snackbar/>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
@@ -89,6 +91,8 @@ function AppWithRedux() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
+            <LinearIndeterminate/>
+            <ErrorHelpers/>
             <Container fixed>
                 <Grid container style={{padding: "20px"}}>
                     <AddItemForm addItem={addTodolist}/>

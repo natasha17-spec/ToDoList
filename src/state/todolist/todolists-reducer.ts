@@ -1,5 +1,5 @@
 import {v1} from 'uuid';
-import {todolistsAPI, TodolistType} from '../api/todolists-api'
+import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {useEffect} from 'react';
 import {Dispatch} from 'redux';
 
