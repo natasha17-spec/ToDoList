@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import './App.css'
 import {
     AppBar,
@@ -16,7 +16,7 @@ import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppRootStateType} from './store'
 import {isInitializedAppTC, RequestStatusType} from './app-reducer'
-import {BrowserRouter, Redirect, Route} from 'react-router-dom';
+import {BrowserRouter, Route} from 'react-router-dom';
 import {Login} from '../features/login/Login';
 import {logoutTC} from '../features/login/auth-reducer';
 
@@ -34,22 +34,14 @@ function App({demo = false}: PropsType) {
     useEffect(() => {
         debugger
         dispatch(isInitializedAppTC())
-    }, [isLoggedIn,isAuth])
+    }, [isLoggedIn, isAuth])
 
-
-    if (!isAuth) {
-        debugger
-        return <div style={{position: 'fixed', top: '30%', left: '50%'}}><CircularProgress/></div>
-    }
-
-    const onHandleToLogout = () => {
-        debugger
+    const onHandleToLogout = useCallback(() => {
         dispatch(logoutTC())
-        // dispatch(isInitializedAppTC())
-        if(!isLoggedIn){
-            return <Redirect to={'/login'}/>
-        }
 
+    }, [])
+    if (!isAuth) {
+        return <div style={{position: 'fixed', top: '30%', left: '50%'}}><CircularProgress/></div>
     }
 
     return (
@@ -64,14 +56,10 @@ function App({demo = false}: PropsType) {
                         <Typography variant="h6">
                             News
                         </Typography>
-                        {isLoggedIn ?
-                            <Button color="inherit" variant={'outlined'} onClick={onHandleToLogout}>
-                                Logout
-                            </Button>
-
-                            :
-                            <Button color="inherit" variant={'outlined'}>
-                                Login</Button>
+                        {isLoggedIn &&
+                        <Button color="inherit" variant={'outlined'} onClick={onHandleToLogout}>
+                            Logout
+                        </Button>
                         }
 
                     </Toolbar>

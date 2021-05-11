@@ -69,7 +69,7 @@ export type TodolistType = {
 }
 export type ResponseType<D = {}> = {
     resultCode: number
-    message: string | null
+    messages: Array<string | null>
     data: D
 }
 export enum TaskStatuses {

@@ -32,7 +32,7 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
 
     useEffect(() => {
 
-        if (demo) {
+        if (demo || !isLoggedIn) {
             return;
         }
         const thunk = fetchTodolistsTC()
