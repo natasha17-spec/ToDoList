@@ -2,17 +2,19 @@ import React from 'react'
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@material-ui/core'
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../../app/store';
-import {authTC, InitialStateLoginType} from './auth-reducer';
 import {Redirect} from 'react-router-dom'
 import {useFormik} from 'formik';
+import {loginTC} from './auth-reducer';
+import {LoginParamsType} from '../../api/todolists-api';
 
 export const Login = () => {
+    debugger
     const dispatch = useDispatch()
-    const loginValue = useSelector<AppRootStateType,InitialStateLoginType>(state => state.auth)
+    const loginValue = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
 
 
-    let onLogin = (values:any) => {
-        dispatch(authTC(values.email,values.password,values.rememberMe))
+    let onLogin = (values: LoginParamsType) => {
+        dispatch(loginTC(values))
     }
 
     const formik = useFormik({
@@ -38,10 +40,11 @@ export const Login = () => {
         }
     })
 
-    if(loginValue.userId !== null){
-        return <Redirect to="/"  />
-
+    if (loginValue) {
+        debugger
+        return <Redirect to="/"/>
     }
+
     return <Grid container justify="center">
         <Grid item xs={4}>
             <form onSubmit={formik.handleSubmit}>

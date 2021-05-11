@@ -1,28 +1,55 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './App.css'
-import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from '@material-ui/core'
+import {
+    AppBar,
+    Button,
+    CircularProgress,
+    Container,
+    IconButton,
+    LinearProgress,
+    Toolbar,
+    Typography
+} from '@material-ui/core'
 import {Menu} from '@material-ui/icons'
 import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {AppRootStateType} from './store'
-import {RequestStatusType} from './app-reducer'
+import {isInitializedAppTC, RequestStatusType} from './app-reducer'
 import {BrowserRouter, Redirect, Route} from 'react-router-dom';
 import {Login} from '../features/login/Login';
-import {InitialStateLoginType} from '../features/login/auth-reducer';
+import {logoutTC} from '../features/login/auth-reducer';
 
 type PropsType = {
     demo?: boolean
 }
 
 function App({demo = false}: PropsType) {
+    debugger
     const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-    const loginValue = useSelector<AppRootStateType, InitialStateLoginType>(state => state.auth)
+    const isAuth = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const dispatch = useDispatch()
 
-    const onHandleToLogout=() => {
-        if(loginValue.userId === null){
-            return <Redirect to="/login"  />
+    useEffect(() => {
+        debugger
+        dispatch(isInitializedAppTC())
+    }, [isLoggedIn,isAuth])
+
+
+    if (!isAuth) {
+        debugger
+        return <div style={{position: 'fixed', top: '30%', left: '50%'}}><CircularProgress/></div>
+    }
+
+    const onHandleToLogout = () => {
+        debugger
+        dispatch(logoutTC())
+        // dispatch(isInitializedAppTC())
+        if(!isLoggedIn){
+            return <Redirect to={'/login'}/>
         }
+
     }
 
     return (
@@ -37,9 +64,12 @@ function App({demo = false}: PropsType) {
                         <Typography variant="h6">
                             News
                         </Typography>
-                        {loginValue.userId !== null ?
+                        {isLoggedIn ?
                             <Button color="inherit" variant={'outlined'} onClick={onHandleToLogout}>
-                                Logout</Button> :
+                                Logout
+                            </Button>
+
+                            :
                             <Button color="inherit" variant={'outlined'}>
                                 Login</Button>
                         }
@@ -50,7 +80,6 @@ function App({demo = false}: PropsType) {
                 <Container fixed>
                     <Route exact path={'/'} render={() => <TodolistsList demo={demo}/>}/>
                     <Route exact path={'/login'} render={() => <Login/>}/>
-                    {/*<TodolistsList demo={demo}/>*/}
                 </Container>
             </div>
         </BrowserRouter>
