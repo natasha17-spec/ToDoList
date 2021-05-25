@@ -48,7 +48,6 @@ export const isInitializedAppTC = () => {
             .catch((err) => {
                 handleServerAppError(err, dispatch)
             })
-        // dispatch(setIsInitializedAC(true))
 
     }
 }
