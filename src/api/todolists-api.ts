@@ -42,21 +42,27 @@ export const todolistsAPI = {
         return instance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model);
     }
 }
+
+
 export type LoginParamsType = {
-    email:string,
-    password:string,
-    rememberMe:boolean
-    captcha?:string
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
 }
+
 export const authAPI = {
-    login(params:LoginParamsType){
-        return instance.post<ResponseType<{userId?:number}>>(`/auth/login`,params)
+    login(data: LoginParamsType) {
+        const promise = instance.post<ResponseType<{userId?: number}>>('auth/login', data);
+        return promise;
     },
-    logout(){
-        return instance.delete<ResponseType>(`/auth/login`)
+    logout() {
+        const promise = instance.delete<ResponseType<{userId?: number}>>('auth/login');
+        return promise;
     },
-    authMe(){
-        return instance.get<ResponseType<{id:number, email:string, login:string}>>(`/auth/me`);
+    me() {
+       const promise =  instance.get<ResponseType<{id: number; email: string; login: string}>>('auth/me');
+       return promise
     }
 }
 
@@ -69,7 +75,7 @@ export type TodolistType = {
 }
 export type ResponseType<D = {}> = {
     resultCode: number
-    messages: Array<string | null>
+    messages: Array<string>
     data: D
 }
 export enum TaskStatuses {

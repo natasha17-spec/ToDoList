@@ -15,38 +15,39 @@ import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppRootStateType} from './store'
-import {isInitializedAppTC, RequestStatusType} from './app-reducer'
-import {BrowserRouter, Route} from 'react-router-dom';
-import {Login} from '../features/login/Login';
-import {logoutTC} from '../features/login/auth-reducer';
+import {initializeAppTC, RequestStatusType} from './app-reducer'
+import {BrowserRouter, NavLink, Route} from 'react-router-dom'
+import {Login} from '../features/Login/Login'
+import {logoutTC} from '../features/Login/auth-reducer'
 
 type PropsType = {
     demo?: boolean
 }
 
 function App({demo = false}: PropsType) {
-    debugger
-    // @ts-ignore
     const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-    const isAuth = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        debugger
-        dispatch(isInitializedAppTC())
-    }, [isLoggedIn, isAuth])
-
-    const onHandleToLogout = useCallback(() => {
-        dispatch(logoutTC())
-
+        if (!demo) {
+            dispatch(initializeAppTC())
+        }
     }, [])
-    if (!isAuth) {
-        return <div style={{position: 'fixed', top: '30%', left: '50%'}}><CircularProgress/></div>
+
+    const logoutHandler = useCallback(() => {
+        dispatch(logoutTC())
+    }, [])
+
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
     }
 
     return (
-        <BrowserRouter>
             <div className="App">
                 <ErrorSnackbar/>
                 <AppBar position="static">
@@ -57,22 +58,15 @@ function App({demo = false}: PropsType) {
                         <Typography variant="h6">
                             News
                         </Typography>
-                        {isLoggedIn &&
-                        <Button color="inherit" variant={'outlined'} onClick={onHandleToLogout}>
-                            Logout
-                        </Button>
-                        }
-
+                        {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
                     </Toolbar>
                     {status === 'loading' && <LinearProgress/>}
                 </AppBar>
                 <Container fixed>
                     <Route exact path={'/'} render={() => <TodolistsList demo={demo}/>}/>
-                    <Route exact path={'/login'} render={() => <Login/>}/>
+                    <Route path={'/login'} render={() => <Login/>}/>
                 </Container>
             </div>
-        </BrowserRouter>
-
     )
 }
 

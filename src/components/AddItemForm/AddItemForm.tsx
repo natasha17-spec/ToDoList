@@ -1,5 +1,5 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {IconButton, TextField} from '@material-ui/core';
+import {Box, Button, FormControl, IconButton, TextField} from '@material-ui/core';
 import {AddBox} from '@material-ui/icons';
 
 type AddItemFormPropsType = {
@@ -7,7 +7,8 @@ type AddItemFormPropsType = {
     disabled?: boolean
 }
 
-export const AddItemForm = React.memo(function ({addItem, disabled = false}: AddItemFormPropsType) {
+export const AddItemForm = React.memo(function({addItem, disabled = false}: AddItemFormPropsType) {
+    console.log("AddItemForm called")
 
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
@@ -44,10 +45,8 @@ export const AddItemForm = React.memo(function ({addItem, disabled = false}: Add
                    label="Title"
                    helperText={error}
         />
-        <IconButton color="primary" onClick={()=>{
-            debugger
-            addItemHandler()}} disabled={disabled}>
-            <AddBox/>
+        <IconButton color="primary" onClick={addItemHandler} disabled={disabled}>
+            <AddBox />
         </IconButton>
     </div>
 })
