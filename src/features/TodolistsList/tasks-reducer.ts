@@ -1,26 +1,39 @@
-import {
-    AddTodolistActionType,
-    RemoveTodolistActionType,
-    SetTodolistsActionType,
-    addTodolistAC,
-    removeTodolistAC,
-    setTodolistsAC
-} from './todolists-reducer'
-import {
-    TaskPriorities,
-    TaskStatuses,
-    TaskType,
-    todolistsAPI,
-    TodolistType,
-    UpdateTaskModelType
-} from '../../api/todolists-api'
+import {addTodolistAC, removeTodolistAC, setTodolistsAC} from './todolists-reducer'
+import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
-import {setAppErrorAC, SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType} from '../../app/app-reducer'
+import {setAppStatusAC} from '../../app/app-reducer'
 import {handleServerAppError, handleServerNetworkError} from '../../utils/error-utils'
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 
 const initialState: TasksStateType = {}
+
+
+export const fetchTasksTC = createAsyncThunk('tasks/fetchTasks', (todolistId: string, thunkAPI) => {
+    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+    return todolistsAPI.getTasks(todolistId)
+        .then((res) => {
+            const tasks = res.data.items
+            thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
+            return {tasks, todolistId}
+        })
+})
+export const removeTaskTC =createAsyncThunk ('tasks/removeTask',
+    (param:{taskId: string, todolistId: string},thunkAPI)  => {
+return  todolistsAPI.deleteTask(param.todolistId, param.taskId)
+    .then(res => {
+        if(res){
+            thunkAPI.dispatch( removeTaskAC({taskId:param.taskId, todolistId:param.todolistId}))
+        }
+    })
+})
+export const _removeTaskTC = (taskId: string, todolistId: string) => (dispatch: Dispatch) => {
+    todolistsAPI.deleteTask(todolistId, taskId)
+        .then(res => {
+            const action = removeTaskAC({taskId, todolistId})
+            dispatch(action)
+        })
+}
 
 const slice = createSlice({
     name: 'tasks',
@@ -43,9 +56,7 @@ const slice = createSlice({
                 tasks[index] = {...tasks[index], ...action.payload.model}
             }
         },
-        setTasksAC(state, action: PayloadAction<{ tasks: Array<TaskType>, todolistId: string }>) {
-            state[action.payload.todolistId] = action.payload.tasks
-        }
+
     },
     extraReducers: (builder) => {
         builder.addCase(addTodolistAC, (state, action) => {
@@ -59,31 +70,23 @@ const slice = createSlice({
                 state[tl.id] = []
             })
         });
+        builder.addCase(fetchTasksTC.fulfilled, (state, action) => {
+            state[action.payload.todolistId] = action.payload.tasks
+        });
+        // builder.addCase(removeTaskTC.fulfilled, (state, action) => {
+        //     state[action.payload.todolistId] = action.payload.tasks
+        // });
     }
 })
 
 export const tasksReducer = slice.reducer
 
 // actions
-export const {removeTaskAC, addTaskAC, updateTaskAC, setTasksAC} = slice.actions
+export const {removeTaskAC, addTaskAC, updateTaskAC} = slice.actions
 
 // thunks
-export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
-    todolistsAPI.getTasks(todolistId)
-        .then((res) => {
-            const tasks = res.data.items
-            dispatch(setTasksAC({tasks, todolistId}))
-            dispatch(setAppStatusAC({status: 'succeeded'}))
-        })
-}
-export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: Dispatch) => {
-    todolistsAPI.deleteTask(todolistId, taskId)
-        .then(res => {
-            const action = removeTaskAC({taskId, todolistId})
-            dispatch(action)
-        })
-}
+
+
 export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     todolistsAPI.createTask(todolistId, title)
