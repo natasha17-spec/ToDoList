@@ -17,10 +17,11 @@ export const fetchTasksTC = createAsyncThunk('tasks/fetchTasks',
     })
 
 
+
 export const removeTaskTC = createAsyncThunk('tasks/removeTask',
     async  (param: { taskId: string, todolistId: string }, thunkAPI) => {
-        return todolistsAPI.deleteTask(param.todolistId, param.taskId)
-            .then(res => ({taskId: param.taskId, todolistId: param.todolistId}))
+        const res = await  todolistsAPI.deleteTask(param.todolistId, param.taskId)
+           return {taskId: param.taskId, todolistId: param.todolistId}
     })
 
 
@@ -42,6 +43,8 @@ export const addTaskTC = createAsyncThunk('tasks/addTask',
                 handleServerNetworkError(error, thunkAPI.dispatch)
             })
     })
+
+
 export const updateTaskTC = createAsyncThunk('tasks/addTask',
     (param: { taskId: string, model: UpdateDomainTaskModelType, todolistId: string }, thunkAPI) => {
         const state = thunkAPI.getState()

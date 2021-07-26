@@ -1,14 +1,19 @@
 import React from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, TextField, Button, Grid} from '@material-ui/core'
-import {useFormik} from 'formik'
-import {useDispatch, useSelector} from 'react-redux'
+import {FormikHelpers, useFormik} from 'formik'
+import { useSelector} from 'react-redux'
 import {loginTC} from './auth-reducer'
-import {AppRootStateType} from '../../app/store'
+import {AppRootStateType, useAppDispatch} from '../../app/store'
 import { Redirect } from 'react-router-dom'
 
-export const Login = () => {
-    const dispatch = useDispatch()
+type FormValueType = {
+    email: string,
+    password: string,
+    rememberMe: boolean
+}
 
+export const Login = () => {
+    const dispatch = useAppDispatch()
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
 
     const formik = useFormik({
@@ -23,19 +28,29 @@ export const Login = () => {
                     password: 'Password is required'
                 }
             }
-
         },
         initialValues: {
             email: '',
             password: '',
             rememberMe: false
         },
-        onSubmit: values => {
-            dispatch(loginTC(values));
+        onSubmit: async (values:FormValueType,formikHelpers:FormikHelpers<FormValueType>) => {
+           const action:any = await dispatch(loginTC(values));
+           if(loginTC.rejected.match(action)){
+               // @ts-ignore
+               if(action.payload?.fieldErrors?.length){
+                   // @ts-ignore
+                   const error = action.payload?.fieldErrors[0]
+                   formikHelpers.setFieldError(error.field, error.error)
+               }
+               debugger
+               formikHelpers.setFieldError('email','Невалидный email');
+           }
         },
     })
 
     if (isLoggedIn) {
+        debugger
         return <Redirect to={"/"} />
     }
 
