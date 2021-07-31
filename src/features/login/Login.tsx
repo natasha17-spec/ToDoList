@@ -13,6 +13,7 @@ type FormValueType = {
 }
 
 export const Login = () => {
+    debugger
     const dispatch = useAppDispatch()
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
 
@@ -35,7 +36,8 @@ export const Login = () => {
             rememberMe: false
         },
         onSubmit: async (values:FormValueType,formikHelpers:FormikHelpers<FormValueType>) => {
-           const action:any = await dispatch(loginTC(values));
+           debugger
+            const action:any = await dispatch(loginTC(values));
            if(loginTC.rejected.match(action)){
                // @ts-ignore
                if(action.payload?.fieldErrors?.length){

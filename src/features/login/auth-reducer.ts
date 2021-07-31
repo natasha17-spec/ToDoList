@@ -5,18 +5,14 @@ import {handleServerAppError, handleServerNetworkError} from '../../utils/error-
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AxiosError} from 'axios';
 
-
-export const loginTC = createAsyncThunk<{isLoggedIn:boolean}, LoginParamsType, {
-
-}>('tasks/fetchTasks',
+export const loginTC = createAsyncThunk<undefined, LoginParamsType>('auth/login',
     async (data: LoginParamsType, thunkAPI) => {
-        debugger
         thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
         try {
             const res = await authAPI.login(data)
             if (res.data.resultCode === 0) {
                 thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
-                return {isLoggedIn: true}
+                return ;
             } else {
                 handleServerAppError(res.data, thunkAPI.dispatch)
                 return thunkAPI.rejectWithValue({errors: res.data.messages, fieldErrors: res.data.fieldsErrors})
@@ -26,10 +22,28 @@ export const loginTC = createAsyncThunk<{isLoggedIn:boolean}, LoginParamsType, {
             handleServerNetworkError(error, thunkAPI.dispatch)
             return thunkAPI.rejectWithValue({errors: [error.message], fieldErrors: undefined})
         }
-
-
 })
 
+export const logout = createAsyncThunk('auth/logout',
+    async (param,thunkAPI) => {
+        debugger
+        thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+        try {
+            debugger
+            const res = await authAPI.logout()
+            if (res.data.resultCode === 0) {
+                thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
+                return ;
+            } else {
+                handleServerAppError(res.data, thunkAPI.dispatch)
+            }
+        } catch (err) {
+            const error:AxiosError = err
+            handleServerNetworkError(error, thunkAPI.dispatch)
+            return thunkAPI.rejectWithValue({errors: [error.message], fieldErrors: undefined})
+        }
+    })
+;
 const slice = createSlice({
     name: 'auth',
     initialState: {
@@ -42,11 +56,13 @@ const slice = createSlice({
     },
     extraReducers: builder => {
         debugger
-        builder.addCase(loginTC.fulfilled, (state, action) => {
-            state.isLoggedIn = action.payload.isLoggedIn
+        builder.addCase(loginTC.fulfilled, (state) => {
+            state.isLoggedIn = true
+        })
+        builder.addCase(logout.fulfilled, (state) => {
+            state.isLoggedIn = false
         })
     }
-
 })
 
 export const authReducer = slice.reducer

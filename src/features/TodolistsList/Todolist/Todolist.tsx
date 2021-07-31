@@ -35,6 +35,7 @@ export const Todolist = React.memo(function ({demo = false, ...props}: PropsType
     }, [])
 
     const addTask = useCallback((title: string) => {
+        debugger
         props.addTask(title, props.todolist.id)
     }, [props.addTask, props.todolist.id])
 
