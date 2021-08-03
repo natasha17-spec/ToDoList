@@ -17,17 +17,21 @@ import {useSelector} from 'react-redux'
 import {AppRootStateType, useAppDispatch} from './store'
 import {initializeAppTC, RequestStatusType} from './app-reducer'
 import {Route} from 'react-router-dom'
-import {Login} from '../features/Login/Login'
-import {logout} from '../features/Login/auth-reducer'
+import {Login} from '../features/auth/Login'
+import {logout} from '../features/auth/auth-reducer'
+import {selectorInitialized, selectorStatus} from './selectors-app';
+import {selectorIsLoggedIn} from '../features/auth/selectors-login';
 
 type PropsType = {
     demo?: boolean
 }
 
+
 function App({demo = false}: PropsType) {
-    const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-    const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+
+    const status = useSelector(selectorStatus)
+    const isInitialized = useSelector(selectorInitialized)
+    const isLoggedIn = useSelector(selectorIsLoggedIn)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
